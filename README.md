@@ -1,6 +1,6 @@
 # Dockerfile For Spark 2.0, Python2.7
 
-The Dockerfile creates an docker image with Spark2.0 (Hadoop 2.7.2) and Python2.7. To boost the machine learning
+The Dockerfile creates a docker image with Spark2.0 (Hadoop 2.7.2) and Python2.7. To boost the machine learning
 algorithms in ML spark, [OpenBlas](#https://github.com/xianyi/OpenBLAS) is installed and Spark is built from source
 using netlib (with `-Pnetlib-lgpl`). 
 
