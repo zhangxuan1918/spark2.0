@@ -1,6 +1,5 @@
 FROM ubuntu:16.04
 # Modified from https://github.com/gettyimages/docker-spark/blob/master/Dockerfile and https://github.com/ogrisel/docker-openblas/blob/master/Dockerfile
-
 ADD openblas.conf /etc/ld.so.conf.d/openblas.conf
 ADD build_openblas.sh build_openblas.sh
 RUN bash build_openblas.sh
