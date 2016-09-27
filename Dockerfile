@@ -73,7 +73,7 @@ RUN git clone https://github.com/apache/spark.git -b $SPARK_VERSION $SPARK_HOME_
  && cd $SPARK_HOME_VERSION \
  && ./build/mvn -Pyarn -Pnetlib-lgpl -Phadoop-$HADOOP_MAJOR_VERSION -Dhadoop.version=$HADOOP_VERSION -DskipTests clean package \
  && chown -R root:root $SPARK_HOME_VERSION \
- && ln -s $SPARK_HOME_VERSION $SPARK_HOME
-
+ && ln -s $SPARK_HOME_VERSION $SPARK_HOME \
+ && cd $SPARK_HOME
 WORKDIR $SPARK_HOME
 CMD ["bin/spark-class", "org.apache.spark.deploy.master.Master"]
