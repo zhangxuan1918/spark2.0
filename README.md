@@ -1,6 +1,6 @@
-# Dockerfile For Spark 2.0, Python2.7
+# Dockerfile For Spark 2.0
 
-The Dockerfile creates a docker image with Spark2.0 (Hadoop 2.7.2) and Python2.7.
+The Dockerfile creates a docker image with Spark2.0, Hadoop 2.7.2, Python2.7 and numpy 1.11.1 (configured with OpenBlas(https://github.com/xianyi/OpenBLAS)).
 
 # Pycharm Configuration
 
