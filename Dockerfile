@@ -1,38 +1,53 @@
-FROM ubuntu:16.04
-# Modified from https://github.com/gettyimages/docker-spark/blob/master/Dockerfile and https://github.com/ogrisel/docker-openblas/blob/master/Dockerfile
-ADD openblas.conf /etc/ld.so.conf.d/openblas.conf
-ADD build_openblas.sh build_openblas.sh
-RUN bash build_openblas.sh
+FROM centos:7
 
-RUN apt-get update \
- && apt-get install -y locales \
- && dpkg-reconfigure -f noninteractive locales \
- && locale-gen en_US.UTF-8 \
- && /usr/sbin/update-locale LANG=en_US.UTF-8 \
- && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
- && locale-gen \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+# Modified from https://github.com/gettyimages/docker-spark/blob/master/Dockerfile
+#USER root
 
-# Users with other locales should set this in their derivative image
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
+# Install packages
+RUN yum -y install wget git python-devel python-pip python-setuptools Cython
+RUN yum -y install gcc-gfortran libmpc-devel gcc gcc-c++
+RUN yum -y install epel-release cmake make
 
-RUN apt-get update \
- && apt-get install -y curl unzip \
-    python2.7 python2.7-setuptools \
-    build-essential python-dev \
- && ln -sf /usr/bin/python2.7 /usr/bin/python \
- && easy_install pip py4j \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+# Install openblas
+RUN mkdir /opt/src \
+ && cd /opt/src \
+ && git clone https://github.com/xianyi/OpenBLAS \
+ && cd /opt/src/OpenBLAS \
+ && make FC=gfortran \
+ && make PREFIX=/opt/OpenBLAS install
+# Update the library system:
+RUN echo /opt/OpenBLAS/lib > /etc/ld.so.conf.d/openblas.conf
+RUN ldconfig
+ENV LD_LIBRARY_PATH=/opt/OpenBLAS/lib:$LD_LIBRARY_PATH
 
-# Install requirements
-ADD requirements.txt /
-RUN pip install -r requirements.txt
+# Install numpy
+RUN cd /opt/src \
+ && git clone  -b v1.11.1 https://github.com/numpy/numpy.git \
+ && cd /opt/src/numpy \
+ && touch site.cfg
 
-ENV PYTHONIOENCODING UTF-8
-ENV PIP_DISABLE_PIP_VERSION_CHECK 1
+RUN echo [default]  >>                              /opt/src/numpy/site.cfg \
+  && echo include_dirs = /opt/OpenBLAS/include >>  /opt/src/numpy/site.cfg \
+  && echo library_dirs = /opt/OpenBLAS/lib >>      /opt/src/numpy/site.cfg \
+  && echo [altas] >>                               /opt/src/numpy/site.cfg \
+  && echo atlas_libs = openblas >>                 /opt/src/numpy/site.cfg \
+  && echo libraries = openblas >>                  /opt/src/numpy/site.cfg \
+  && echo [openblas] >>                            /opt/src/numpy/site.cfg \
+  && echo libraries = openblas >>                  /opt/src/numpy/site.cfg \
+  && echo library_dirs = /opt/OpenBLAS/lib >>       /opt/src/numpy/site.cfg \
+  && echo include_dirs = /opt/OpenBLAS/include >>   /opt/src/numpy/site.cfg \
+  && echo [lapack] >>                               /opt/src/numpy/site.cfg \
+  && echo lapack_libs = openblas >>                 /opt/src/numpy/site.cfg \
+  && echo library_dirs = /opt/openblas/lib >>       /opt/src/numpy/site.cfg
+
+RUN cd /opt/src/numpy \
+  && python setup.py config \
+  && python setup.py build --fcompiler=gnu95 \
+  && python setup.py install
+
+## Install requirements
+##ADD ./requirements.txt /
+##RUN pip install -r requirements.txt
 
 # JAVA
 ARG JAVA_MAJOR_VERSION=8
@@ -72,8 +87,10 @@ ENV PATH $PATH:${SPARK_HOME}/bin
 RUN git clone https://github.com/apache/spark.git -b $SPARK_VERSION $SPARK_HOME_VERSION \
  && cd $SPARK_HOME_VERSION \
  && ./build/mvn -Pyarn -Pnetlib-lgpl -Phadoop-$HADOOP_MAJOR_VERSION -Dhadoop.version=$HADOOP_VERSION -DskipTests clean package \
+ && sbt/sbt publish-local
  && chown -R root:root $SPARK_HOME_VERSION \
  && ln -s $SPARK_HOME_VERSION $SPARK_HOME \
  && cd $SPARK_HOME
+
 WORKDIR $SPARK_HOME
 CMD ["bin/spark-class", "org.apache.spark.deploy.master.Master"]
