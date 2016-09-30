@@ -1,3 +1,2 @@
-numpy==1.11.1
 argparse==1.4.0
 scipy==0.17.1

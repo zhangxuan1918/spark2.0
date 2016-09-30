@@ -4,9 +4,10 @@ FROM centos:7
 #USER root
 
 # Install packages
-RUN yum -y install wget git python-devel python-pip python-setuptools Cython
+RUN yum -y install epel-release wget git Cython vim
 RUN yum -y install gcc-gfortran libmpc-devel gcc gcc-c++
-RUN yum -y install epel-release cmake make
+RUN yum -y install cmake make
+RUN yum -y install python-devel python-setuptools python-pip
 
 # Install openblas
 RUN mkdir /opt/src \
@@ -46,8 +47,8 @@ RUN cd /opt/src/numpy \
   && python setup.py install
 
 ## Install requirements
-##ADD ./requirements.txt /
-##RUN pip install -r requirements.txt
+ADD ./requirements.txt /
+RUN pip install -r requirements.txt
 
 # JAVA
 ARG JAVA_MAJOR_VERSION=8
@@ -71,6 +72,7 @@ ENV HADOOP_HOME_VERSION /usr/hadoop-$HADOOP_VERSION
 ENV HADOOP_HOME /usr/hadoop
 ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
 ENV PATH $PATH:$HADOOP_HOME/bin
+ENV HADOOP_OPTS=-Djava.library.path=$HADOOP_HOME/lib/native
 RUN curl -sL --retry 3 \
   "http://archive.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz" \
   | gunzip \
