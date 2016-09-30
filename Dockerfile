@@ -87,7 +87,6 @@ ENV PATH $PATH:${SPARK_HOME}/bin
 RUN git clone https://github.com/apache/spark.git -b $SPARK_VERSION $SPARK_HOME_VERSION \
  && cd $SPARK_HOME_VERSION \
  && ./build/mvn -Pyarn -Pnetlib-lgpl -Phadoop-$HADOOP_MAJOR_VERSION -Dhadoop.version=$HADOOP_VERSION -DskipTests clean package \
- && sbt/sbt publish-local
  && chown -R root:root $SPARK_HOME_VERSION \
  && ln -s $SPARK_HOME_VERSION $SPARK_HOME \
  && cd $SPARK_HOME
