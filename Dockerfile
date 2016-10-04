@@ -39,7 +39,8 @@ RUN echo [default]  >>                              /opt/src/numpy/site.cfg \
   && echo include_dirs = /opt/OpenBLAS/include >>   /opt/src/numpy/site.cfg \
   && echo [lapack] >>                               /opt/src/numpy/site.cfg \
   && echo lapack_libs = openblas >>                 /opt/src/numpy/site.cfg \
-  && echo library_dirs = /opt/openblas/lib >>       /opt/src/numpy/site.cfg
+  && echo library_dirs = /opt/OpenBLAS/lib >>       /opt/src/numpy/site.cfg \
+  && echo include_dirs = /opt/OpenBLAS/include >>   /opt/src/numpy/site.cfg
 
 RUN cd /opt/src/numpy \
   && python setup.py config \
@@ -73,6 +74,7 @@ ENV HADOOP_HOME /usr/hadoop
 ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
 ENV PATH $PATH:$HADOOP_HOME/bin
 ENV HADOOP_OPTS=-Djava.library.path=$HADOOP_HOME/lib/native
+ENV LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/::$LD_LIBRARY_PATH
 RUN curl -sL --retry 3 \
   "http://archive.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz" \
   | gunzip \
