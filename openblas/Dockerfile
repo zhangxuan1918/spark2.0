@@ -4,7 +4,7 @@ FROM centos:7
 #USER root
 
 # Install packages
-RUN yum -y install epel-release wget git Cython vim
+RUN yum -y install epel-release wget git Cython blas lapack vim
 RUN yum -y install gcc-gfortran libmpc-devel gcc gcc-c++
 RUN yum -y install cmake make
 RUN yum -y install python-devel python-setuptools python-pip
@@ -20,6 +20,11 @@ RUN mkdir /opt/src \
 RUN echo /opt/OpenBLAS/lib > /etc/ld.so.conf.d/openblas.conf
 RUN ldconfig
 ENV LD_LIBRARY_PATH=/opt/OpenBLAS/lib:$LD_LIBRARY_PATH
+
+RUN ln -sf /opt/OpenBLAS/lib/libopenblas.so /lib64/libblas.so.3 \
+ && ln -sf /opt/OpenBLAS/lib/libopenblas.so /lib64/libblas.so \
+ && ln -sf /opt/OpenBLAS/lib/libopenblas.so /lib64/liblapack.so.3 \
+ && ln -sf /opt/OpenBLAS/lib/libopenblas.so /lib64/liblapack.so
 
 # Install numpy
 RUN cd /opt/src \
