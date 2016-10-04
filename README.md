@@ -1,7 +1,3 @@
-# Dockerfile For Spark 2.0
-
-The Dockerfile creates a docker image with Spark2.0, Hadoop 2.7.2, Python2.7 and numpy 1.11.1 (configured with OpenBlas(https://github.com/xianyi/OpenBLAS)).
-
 # Pycharm Configuration
 
 To use Pycharm with docker, properly setup the remote interpreter. In your pyspark script, edit the configuration and

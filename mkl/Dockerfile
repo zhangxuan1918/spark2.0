@@ -9,22 +9,24 @@ RUN yum -y install gcc-gfortran libmpc-devel gcc gcc-c++
 RUN yum -y install cmake make
 RUN yum -y install python-devel python-setuptools python-pip
 
-## Install openblas
-RUN mkdir /opt/src \
- && cd /opt/src \
- && git clone https://github.com/xianyi/OpenBLAS \
- && cd /opt/src/OpenBLAS \
- && make FC=gfortran \
- && make PREFIX=/opt/OpenBLAS install
-# Update the library system:
-RUN echo /opt/OpenBLAS/lib > /etc/ld.so.conf.d/openblas.conf
-RUN ldconfig
-ENV LD_LIBRARY_PATH=/opt/OpenBLAS/lib:$LD_LIBRARY_PATH
+# Install MKL
+RUN mkdir -p /opt/src/
+ENV mkl=l_mkl_2017.0.098
+ADD ./$mkl.tgz /opt/src/
+RUN cd /opt/src/ \
+ && cd $mkl \
+ && ./install.sh --silent=silent.cfg
 
-RUN ln -sf /opt/OpenBLAS/lib/libopenblas.so /lib64/libblas.so.3 \
- && ln -sf /opt/OpenBLAS/lib/libopenblas.so /lib64/libblas.so \
- && ln -sf /opt/OpenBLAS/lib/libopenblas.so /lib64/liblapack.so.3 \
- && ln -sf /opt/OpenBLAS/lib/libopenblas.so /lib64/liblapack.so
+# Update the library system:
+RUN echo /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64 >> /etc/ld.so.conf.d/intel.conf
+RUN echo /opt/intel/compilers_and_libraries/linux/lib/intel64_lin >> /etc/ld.so.conf.d/intel.conf
+RUN ldconfig
+ENV LD_LIBRARY_PATH=/opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/:/opt/intel/compilers_and_libraries/linux/lib/intel64:$LD_LIBRARY_PATH
+
+RUN ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/libblas.so.3 \
+ && ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/libblas.so \
+ && ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/liblapack.so.3 \
+ && ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/liblapack.so
 
 # Install numpy
 RUN cd /opt/src \
@@ -32,25 +34,16 @@ RUN cd /opt/src \
  && cd /opt/src/numpy \
  && touch site.cfg
 
-RUN echo [default]  >>                              /opt/src/numpy/site.cfg \
-  && echo include_dirs = /opt/OpenBLAS/include >>  /opt/src/numpy/site.cfg \
-  && echo library_dirs = /opt/OpenBLAS/lib >>      /opt/src/numpy/site.cfg \
-  && echo [altas] >>                               /opt/src/numpy/site.cfg \
-  && echo atlas_libs = openblas >>                 /opt/src/numpy/site.cfg \
-  && echo libraries = openblas >>                  /opt/src/numpy/site.cfg \
-  && echo [openblas] >>                            /opt/src/numpy/site.cfg \
-  && echo libraries = openblas >>                  /opt/src/numpy/site.cfg \
-  && echo library_dirs = /opt/OpenBLAS/lib >>       /opt/src/numpy/site.cfg \
-  && echo include_dirs = /opt/OpenBLAS/include >>   /opt/src/numpy/site.cfg \
-  && echo [lapack] >>                               /opt/src/numpy/site.cfg \
-  && echo lapack_libs = openblas >>                 /opt/src/numpy/site.cfg \
-  && echo library_dirs = /opt/OpenBLAS/lib >>       /opt/src/numpy/site.cfg \
-  && echo include_dirs = /opt/OpenBLAS/include >>   /opt/src/numpy/site.cfg
+RUN echo [mkl]  >>                                                                      /opt/src/numpy/site.cfg \
+  && echo library_dirs = /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64 >>    /opt/src/numpy/site.cfg \
+  && echo include_dirs = /opt/intel/compilers_and_libraries/linux/mkl/include >>        /opt/src/numpy/site.cfg \
+  && echo mkl_libs = mkl_rt >>                                                          /opt/src/numpy/site.cfg \
+  && echo lapack_libs = >>                                                              /opt/src/numpy/site.cfg
 
 RUN cd /opt/src/numpy \
-  && python setup.py config \
   && python setup.py build --fcompiler=gnu95 \
   && python setup.py install
+
 
 RUN rm -rf /opt/src/
 ## Install requirements
