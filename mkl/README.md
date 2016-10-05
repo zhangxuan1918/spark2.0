@@ -12,4 +12,5 @@ To improve Spark performance, we properly configure [MKL 11.3](https://software.
    * `ACTIVATION_TYPE=serial_number`
 4. make a tar ball with the modified `silent.cfg`, e.g. `tar -cvzf l_mkl_2017.0.098.tgz l_mkl_2017.0.098`
 5. put the tar ball in the same folder with the dockerfile
+6. set `ENV mkl` in Dockerfile, e.g. `ENV mkl=l_mkl_2017.0.098`
 
