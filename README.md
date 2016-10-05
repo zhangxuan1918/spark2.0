@@ -1,3 +1,8 @@
+# Spark2.0 Dockerfile
+
+1. In OpenBlas, we configure spark properly with OpenBlas installed
+2. In MKL, we configure spark properly with MKL installed
+
 # Pycharm Configuration
 
 To use Pycharm with docker, properly setup the remote interpreter. In your pyspark script, edit the configuration and
