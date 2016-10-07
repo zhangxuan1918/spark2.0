@@ -4,10 +4,13 @@ FROM centos:7
 #USER root
 
 # Install packages
-RUN yum -y install epel-release wget git Cython blas lapack vim
+RUN yum -y install epel-release wget git blas lapack vim
 RUN yum -y install gcc-gfortran libmpc-devel gcc gcc-c++
 RUN yum -y install cmake make
 RUN yum -y install python-devel python-setuptools python-pip
+
+# Install Cython
+RUN pip install Cython==0.24.1
 
 # Install MKL
 RUN mkdir -p /opt/src/
@@ -35,20 +38,28 @@ RUN cd /opt/src \
  && touch site.cfg
 
 RUN echo [mkl]  >>                                                                      /opt/src/numpy/site.cfg \
-  && echo library_dirs = /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64 >>    /opt/src/numpy/site.cfg \
-  && echo include_dirs = /opt/intel/compilers_and_libraries/linux/mkl/include >>        /opt/src/numpy/site.cfg \
-  && echo mkl_libs = mkl_rt >>                                                          /opt/src/numpy/site.cfg \
-  && echo lapack_libs = >>                                                              /opt/src/numpy/site.cfg
+ && echo library_dirs = /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64 >>    /opt/src/numpy/site.cfg \
+ && echo include_dirs = /opt/intel/compilers_and_libraries/linux/mkl/include >>        /opt/src/numpy/site.cfg \
+ && echo mkl_libs = mkl_rt >>                                                          /opt/src/numpy/site.cfg \
+ && echo lapack_libs = >>                                                              /opt/src/numpy/site.cfg
 
 RUN cd /opt/src/numpy \
-  && python setup.py build --fcompiler=gnu95 \
-  && python setup.py install
+ && python setup.py build --fcompiler=gnu95 \
+ && python setup.py install
+
+# Install Scipy
+ENV LDFLAGS="${LDFLAGS} -shared"
+RUN cd /opt/src \
+ && git clone -b v0.18.0 https://github.com/scipy/scipy.git \
+ && cd /opt/src/scipy \
+ && python setup.py build --fcompiler=gnu95 \
+ && python setup.py install
 
 
 RUN rm -rf /opt/src/
 # Install requirements
-ADD ./requirements.txt /
-RUN pip install -r requirements.txt
+#ADD ./requirements.txt /
+#RUN pip install -r requirements.txt
 
 # JAVA
 ARG JAVA_MAJOR_VERSION=8

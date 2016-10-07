@@ -12,49 +12,15 @@ RUN yum -y install python-devel python-setuptools python-pip
 # Install Cython
 RUN pip install Cython==0.24.1
 
-# Install openblas
+# Install numpy
 RUN mkdir /opt/src \
  && cd /opt/src \
- && git clone https://github.com/xianyi/OpenBLAS \
- && cd /opt/src/OpenBLAS \
- && make FC=gfortran \
- && make PREFIX=/opt/OpenBLAS install
-# Update the library system:
-RUN echo /opt/OpenBLAS/lib > /etc/ld.so.conf.d/openblas.conf
-RUN ldconfig
-ENV LD_LIBRARY_PATH=/opt/OpenBLAS/lib:$LD_LIBRARY_PATH
-
-RUN ln -sf /opt/OpenBLAS/lib/libopenblas.so /lib64/libblas.so.3 \
- && ln -sf /opt/OpenBLAS/lib/libopenblas.so /lib64/libblas.so \
- && ln -sf /opt/OpenBLAS/lib/libopenblas.so /lib64/liblapack.so.3 \
- && ln -sf /opt/OpenBLAS/lib/libopenblas.so /lib64/liblapack.so
-
-# Install numpy
-RUN cd /opt/src \
- && git clone  -b v1.11.1 https://github.com/numpy/numpy.git \
- && cd /opt/src/numpy \
- && touch site.cfg
-
-RUN echo [default]  >>                              /opt/src/numpy/site.cfg \
-  && echo include_dirs = /opt/OpenBLAS/include >>  /opt/src/numpy/site.cfg \
-  && echo library_dirs = /opt/OpenBLAS/lib >>      /opt/src/numpy/site.cfg \
-  && echo [altas] >>                               /opt/src/numpy/site.cfg \
-  && echo atlas_libs = openblas >>                 /opt/src/numpy/site.cfg \
-  && echo libraries = openblas >>                  /opt/src/numpy/site.cfg \
-  && echo [openblas] >>                            /opt/src/numpy/site.cfg \
-  && echo libraries = openblas >>                  /opt/src/numpy/site.cfg \
-  && echo library_dirs = /opt/OpenBLAS/lib >>       /opt/src/numpy/site.cfg \
-  && echo include_dirs = /opt/OpenBLAS/include >>   /opt/src/numpy/site.cfg \
-  && echo [lapack] >>                               /opt/src/numpy/site.cfg \
-  && echo lapack_libs = openblas >>                 /opt/src/numpy/site.cfg \
-  && echo library_dirs = /opt/OpenBLAS/lib >>       /opt/src/numpy/site.cfg \
-  && echo include_dirs = /opt/OpenBLAS/include >>   /opt/src/numpy/site.cfg
+ && git clone  -b v1.11.1 https://github.com/numpy/numpy.git
 
 RUN cd /opt/src/numpy \
-  && python setup.py config \
+  && git clean -xdf \
   && python setup.py build --fcompiler=gnu95 \
   && python setup.py install
-
 
 # Install Scipy
 ENV LDFLAGS="${LDFLAGS} -shared"
@@ -65,6 +31,7 @@ RUN cd /opt/src \
  && python setup.py install
 
 RUN rm -rf /opt/src/
+
 ## Install requirements
 #ADD ./requirements.txt /
 #RUN pip install -r requirements.txt
@@ -108,7 +75,7 @@ ENV SPARK_DIST_CLASSPATH="$HADOOP_HOME/etc/hadoop/*:$HADOOP_HOME/share/hadoop/co
 ENV PATH $PATH:${SPARK_HOME}/bin
 RUN git clone https://github.com/apache/spark.git -b $SPARK_VERSION $SPARK_HOME_VERSION \
  && cd $SPARK_HOME_VERSION \
- && ./build/mvn -Pyarn -Pnetlib-lgpl -Phadoop-$HADOOP_MAJOR_VERSION -Dhadoop.version=$HADOOP_VERSION -DskipTests clean package \
+ && ./build/mvn -Pyarn -Phadoop-$HADOOP_MAJOR_VERSION -Dhadoop.version=$HADOOP_VERSION -DskipTests clean package \
  && chown -R root:root $SPARK_HOME_VERSION \
  && ln -s $SPARK_HOME_VERSION $SPARK_HOME \
  && cd $SPARK_HOME
