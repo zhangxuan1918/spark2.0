@@ -53,9 +53,9 @@ RUN cd /opt/src/numpy \
   && python setup.py install
 
 RUN rm -rf /opt/src/
-## Install requirements
-#ADD ./requirements.txt /
-#RUN pip install -r requirements.txt
+# Install requirements
+ADD ./requirements.txt /
+RUN pip install -r requirements.txt
 
 # JAVA
 ARG JAVA_MAJOR_VERSION=8
