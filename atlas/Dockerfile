@@ -18,7 +18,6 @@ RUN mkdir /opt/src \
  && git clone  -b v1.11.1 https://github.com/numpy/numpy.git
 
 RUN cd /opt/src/numpy \
-  && git clean -xdf \
   && python setup.py build --fcompiler=gnu95 \
   && python setup.py install
 
