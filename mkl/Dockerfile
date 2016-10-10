@@ -4,7 +4,8 @@ FROM centos:7
 #USER root
 
 # Install packages
-RUN yum -y install epel-release wget git blas lapack vim
+RUN yum -y install epel-release wget git vim
+RUN yum -y install blas-devel lapack-devel atlas-devel
 RUN yum -y install gcc-gfortran libmpc-devel gcc gcc-c++
 RUN yum -y install cmake make
 RUN yum -y install python-devel python-setuptools python-pip
