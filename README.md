@@ -6,7 +6,16 @@
 
 # Performance 
 
-We did performance comparsion on a random matrix of size 1000 x 1000
+We did performance comparsion on a random matrix of size 1000 x 1000 with following configuration
+
+## Configuration
+
+|            | INFO                                    |
+| ----------:|:----------------------------------------|
+| cpu model name| Intel(R) Core(TM) i5-4288U CPU @ 2.60GHz|
+| cpu MHz		| 2600.000|
+| num cpu   | 1       |
+| memory    | 2050400 KB |
 
 ### mkl 
 
