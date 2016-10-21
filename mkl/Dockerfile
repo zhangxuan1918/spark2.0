@@ -27,10 +27,12 @@ RUN echo /opt/intel/compilers_and_libraries/linux/lib/intel64_lin >> /etc/ld.so.
 RUN ldconfig
 ENV LD_LIBRARY_PATH=/opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/:/opt/intel/compilers_and_libraries/linux/lib/intel64:$LD_LIBRARY_PATH
 
-RUN ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/libblas.so.3 \
- && ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/libblas.so \
+RUN ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/libblas.so \
+ && ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/libblas.so.3 \
+ && ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/libblas.so.3.4 \
+ && ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/liblapack.so \
  && ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/liblapack.so.3 \
- && ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/liblapack.so
+ && ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/liblapack.so.4
 
 # Install numpy
 RUN cd /opt/src \
