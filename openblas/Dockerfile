@@ -25,10 +25,12 @@ RUN echo /opt/OpenBLAS/lib > /etc/ld.so.conf.d/openblas.conf
 RUN ldconfig
 ENV LD_LIBRARY_PATH=/opt/OpenBLAS/lib:$LD_LIBRARY_PATH
 
-RUN ln -sf /opt/OpenBLAS/lib/libopenblas.so /lib64/libblas.so.3 \
- && ln -sf /opt/OpenBLAS/lib/libopenblas.so /lib64/libblas.so \
- && ln -sf /opt/OpenBLAS/lib/libopenblas.so /lib64/liblapack.so.3 \
- && ln -sf /opt/OpenBLAS/lib/libopenblas.so /lib64/liblapack.so
+RUN ln -sf /opt/OpenBLAS/lib/libopenblas.so /usr/lib64/libblas.so \
+ && ln -sf /opt/OpenBLAS/lib/libopenblas.so /usr/lib64/libblas.so.3 \
+ && ln -sf /opt/OpenBLAS/lib/libopenblas.so /usr/lib64/libblas.so.3.4 \
+ && ln -sf /opt/OpenBLAS/lib/libopenblas.so /usr/lib64/liblapack.so \
+ && ln -sf /opt/OpenBLAS/lib/libopenblas.so /usr/lib64/liblapack.so.3 \
+ && ln -sf /opt/OpenBLAS/lib/libopenblas.so /usr/lib64/liblapack.so.3.4
 
 # Install numpy
 RUN cd /opt/src \
