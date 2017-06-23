@@ -1,0 +1,11 @@
+version: '2'
+services:
+  spark2.1_atlas:
+    build: ./atlas
+    image: xuan1918/spark2.1-atlas
+  spark2.1_mkl:
+    build: ./mkl
+    image: xuan1918/spark2.1-mkl
+  spark2.1_openblas:
+    build: ./openblas
+    image: xuan1918/spark2.1-openblas
