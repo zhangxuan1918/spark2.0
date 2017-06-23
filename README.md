@@ -1,4 +1,4 @@
-# Spark2.0 Dockerfile
+# Spark Dockerfile
 
 1. In OpenBlas, we configure spark properly with OpenBlas installed
 2. In MKL, we configure spark properly with MKL installed
@@ -49,6 +49,6 @@ add following ENV vars
 ```
 PYSPARK_PYTHON	/usr/bin/python
 PYSPARK_DRIVER_PYTHON	/usr/bin/python
-PYTHONPATH	/usr/spark/python:/usr/spark/python/lib/py4j-0.10.1-src.zip:$PYTHONPATH
+PYTHONPATH	/usr/spark/python:/usr/spark/python/lib/py4j-0.10.4-src.zip:$PYTHONPATH
 SPARK_HOME	/usr/spark
 ```
