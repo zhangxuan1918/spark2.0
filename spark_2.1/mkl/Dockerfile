@@ -17,8 +17,7 @@ RUN pip install Cython==0.25.2
 RUN mkdir -p /opt/src/
 ENV mkl=l_mkl_2017.3.196
 ADD ./$mkl.tgz /opt/src/
-RUN cd /opt/src/ \
- && cd $mkl \
+RUN cd /opt/src/$mkl \
  && ./install.sh --silent=silent.cfg
 
 # Update the library system:
@@ -31,7 +30,7 @@ RUN ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so
  && ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/libblas.so.3 \
  && ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/libblas.so.3.4 \
  && ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/liblapack.so \
- && ln -sf /opt/intel/compilers_and_libraries/linux/mkl /lib/intel64/libmkl_rt.so /lib64/liblapack.so.3 \
+ && ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/liblapack.so.3 \
  && ln -sf /opt/intel/compilers_and_libraries/linux/mkl/lib/intel64/libmkl_rt.so /lib64/liblapack.so.3.4
 
 # Install numpy
