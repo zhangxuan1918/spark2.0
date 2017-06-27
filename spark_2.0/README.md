@@ -13,8 +13,44 @@ scipy==0.18.0
 java==8u92-b14
 hadoop==2.7.2
 spark==2.0.0
-``` 
+```
+ 
+# Performance 
 
+We did performance comparsion on a random matrix of size 1000 x 1000 with following configuration
+
+## Configuration
+
+|            | INFO                                    |
+| ----------:|:----------------------------------------|
+| cpu model name| Intel(R) Core(TM) i5-4288U CPU @ 2.60GHz|
+| cpu MHz		| 2600.000|
+| num cpu   | 1       |
+| memory    | 2050400 KB |
+
+### mkl (built without intel icc)
+
+|OPERATION              |  TIME                 |
+|---------------------:|:---------------------| 
+|matrix multiplication  | 24.07747793197632 sec |
+|cholesky               | 0.0527433872223 sec   |
+|svd                    | 1.51327500343 sec     |
+
+### atlas 
+
+|OPERATION              |  TIME                 |
+|---------------------:|:---------------------| 
+|matrix multiplication  | 87.5759379863739 sec  |
+|cholesky               | 0.206461620331 sec    |
+|svd                    | 17.2115719795 sec     |
+
+### openblas
+
+|OPERATION              |  TIME                 |
+|---------------------:|:---------------------| 
+|matrix multiplication  | 24.00079584121704 sec |
+|cholesky               | 0.119298410416 sec    |
+|svd                    | 3.18814339638 sec     |
 # Pycharm Configuration
 
 To use Pycharm with docker, properly setup the remote interpreter. In your pyspark script, edit the configuration and

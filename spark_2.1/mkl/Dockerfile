@@ -16,6 +16,7 @@ RUN pip install Cython==0.25.2
 # Install MKL
 RUN mkdir -p /opt/src/
 ENV mkl=l_mkl_2017.3.196
+ENV MKLROOT=/opt/src/intel
 ADD ./$mkl.tgz /opt/src/
 RUN cd /opt/src/$mkl \
  && ./install.sh --silent=silent.cfg
@@ -44,6 +45,12 @@ RUN echo [mkl]  >>                                                              
  && echo include_dirs = /opt/intel/compilers_and_libraries/linux/mkl/include >>        /opt/src/numpy/site.cfg \
  && echo mkl_libs = mkl_rt >>                                                          /opt/src/numpy/site.cfg \
  && echo lapack_libs = >>                                                              /opt/src/numpy/site.cfg
+
+# set environment variables
+RUN export CFLAGS="-fopenmp -m64 -mtune=native -O3 -Wl,--no-as-needed" \
+ && export CXXFLAGS="-fopenmp -m64 -mtune=native -O3 -Wl,--no-as-needed" \
+ && export LDFLAGS="-ldl -lm" \
+ && export FFLAGS="-fopenmp -m64 -mtune=native -O3"
 
 RUN cd /opt/src/numpy \
  && python setup.py build --fcompiler=gnu95 \
