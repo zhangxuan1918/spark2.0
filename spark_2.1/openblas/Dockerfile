@@ -30,7 +30,9 @@ RUN ln -sf /opt/OpenBLAS/lib/libopenblas.so /usr/lib64/libblas.so \
  && ln -sf /opt/OpenBLAS/lib/libopenblas.so /usr/lib64/libblas.so.3.4 \
  && ln -sf /opt/OpenBLAS/lib/libopenblas.so /usr/lib64/liblapack.so \
  && ln -sf /opt/OpenBLAS/lib/libopenblas.so /usr/lib64/liblapack.so.3 \
- && ln -sf /opt/OpenBLAS/lib/libopenblas.so /usr/lib64/liblapack.so.3.4
+ && ln -sf /opt/OpenBLAS/lib/libopenblas.so /usr/lib64/liblapack.so.3.4 \
+ && ln -sf /usr/lib64/atlas/libtatlas.so /usr/lib64/libatlas.so \
+ && ln -sf /usr/lib64/atlas/libtatlas.so /usr/lib64/libcblas.so
 
 # Install numpy
 RUN cd /opt/src \
