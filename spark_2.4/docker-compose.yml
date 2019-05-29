@@ -1,0 +1,5 @@
+version: '2'
+services:
+  spark2.4_openblas:
+    build: ./openblas
+    image: xuan1918/spark2.4:openblas
