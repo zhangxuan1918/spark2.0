@@ -23,6 +23,6 @@ add following ENV vars
 ```
 PYSPARK_PYTHON	/usr/bin/python
 PYSPARK_DRIVER_PYTHON	/usr/bin/python
-PYTHONPATH	/usr/spark/python:/usr/spark/python/lib/py4j-0.10.4-src.zip:$PYTHONPATH
+PYTHONPATH	/usr/spark/python:/usr/spark/python/lib/py4j-0.10.8.1-src.zip:$PYTHONPATH
 SPARK_HOME	/usr/spark
 ```
