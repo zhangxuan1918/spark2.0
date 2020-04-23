@@ -2,18 +2,15 @@
 
 1. In OpenBlas, we configure spark properly with OpenBlas installed
 2. In MKL, we configure spark properly with MKL installed
-3. In Atlas, we configure spark properly with atlas installed 
+3. In Atlas, we configure spark properly with atlas installed
 
 # Version
 
 ```bash
-cython==0.29.9
-numpy==1.16.4
-scipy==1.2.1
-java==8u131-b11
-hadoop==2.8.5
-spark==2.4.3
-``` 
+openjdk-8-jre
+hadoop==3.0.0
+spark==2.4.5
+```
 
 # Pycharm Configuration
 
