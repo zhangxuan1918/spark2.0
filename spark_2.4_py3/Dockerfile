@@ -50,15 +50,17 @@ RUN curl -sL --retry 3 \
 # SPARK
 ENV SPARK_VERSION 2.4.5
 ENV SPARK_PACKAGE spark-${SPARK_VERSION}-bin-without-hadoop
-ENV SPARK_HOME /usr/spark-${SPARK_VERSION}
+ENV SPARK_HOME_VERSION /usr/spark-${SPARK_VERSION}
+ENV SPARK_HOME /usr/spark
 ENV SPARK_DIST_CLASSPATH="$HADOOP_HOME/etc/hadoop/*:$HADOOP_HOME/share/hadoop/common/lib/*:$HADOOP_HOME/share/hadoop/common/*:$HADOOP_HOME/share/hadoop/hdfs/*:$HADOOP_HOME/share/hadoop/hdfs/lib/*:$HADOOP_HOME/share/hadoop/hdfs/*:$HADOOP_HOME/share/hadoop/yarn/lib/*:$HADOOP_HOME/share/hadoop/yarn/*:$HADOOP_HOME/share/hadoop/mapreduce/lib/*:$HADOOP_HOME/share/hadoop/mapreduce/*:$HADOOP_HOME/share/hadoop/tools/lib/*"
-ENV PATH $PATH:${SPARK_HOME}/bin
+ENV PATH $PATH:${SPARK_HOME_VERSION}/bin
 RUN curl -sL --retry 3 \
   "https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/${SPARK_PACKAGE}.tgz" \
   | gunzip \
   | tar x -C /usr/ \
- && mv /usr/$SPARK_PACKAGE $SPARK_HOME \
- && chown -R root:root $SPARK_HOME
+ && mv /usr/$SPARK_PACKAGE $SPARK_HOME_VERSION \
+ && ln -s $SPARK_HOME_VERSION $SPARK_HOME \
+ && chown -R root:root $SPARK_HOME_VERSION
 
 WORKDIR $SPARK_HOME
 CMD ["bin/spark-class", "org.apache.spark.deploy.master.Master"]
