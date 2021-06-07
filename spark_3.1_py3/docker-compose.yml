@@ -1,0 +1,9 @@
+version: '2'
+services:
+  spark3.0-py3:
+    build:
+      context: .
+      args:
+        HADOOP_VERSION: 3.0.0
+        SPARK_VERSION: 3.0.0
+    image: xuan1918/spark3.0:py3.7

@@ -1,4 +1,4 @@
-FROM python:3.7-stretch
+FROM python:2.7-stretch
 # from https://github.com/gettyimages/docker-spark/blob/master/Dockerfile
 
 RUN apt-get update \

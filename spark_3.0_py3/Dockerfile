@@ -1,6 +1,9 @@
 FROM python:3.7-stretch
 # from https://github.com/gettyimages/docker-spark/blob/master/Dockerfile
 
+ARG HADOOP_VERSION
+ARG SPARK_VERSION
+
 RUN apt-get update \
  && apt-get install -y locales \
  && dpkg-reconfigure -f noninteractive locales \
@@ -34,7 +37,6 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 # HADOOP
-ENV HADOOP_VERSION 3.0.0
 ENV HADOOP_HOME /usr/hadoop-$HADOOP_VERSION
 ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
 ENV PATH $PATH:$HADOOP_HOME/bin
@@ -46,7 +48,6 @@ RUN curl -sL --retry 3 \
  && chown -R root:root $HADOOP_HOME
 
 # SPARK
-ENV SPARK_VERSION 2.4.5
 ENV SPARK_PACKAGE spark-${SPARK_VERSION}-bin-without-hadoop
 ENV SPARK_HOME_VERSION /usr/spark-${SPARK_VERSION}
 ENV SPARK_HOME /usr/spark
